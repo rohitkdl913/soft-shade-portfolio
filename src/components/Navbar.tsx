@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { ChevronUp } from 'lucide-react';
+import { ChevronUp, Menu } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,6 +42,7 @@ const Navbar = () => {
         behavior: 'smooth'
       });
     }
+    setMobileMenuOpen(false);
   };
 
   const scrollToTop = () => {
@@ -48,6 +50,10 @@ const Navbar = () => {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
   };
 
   return (
@@ -73,13 +79,35 @@ const Navbar = () => {
             ))}
           </div>
           <div className="md:hidden">
-            <button className="p-2 text-gray-700">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+            <button 
+              className="p-2 text-gray-700 hover:text-teal-500 transition-colors"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle menu"
+            >
+              <Menu className="w-6 h-6" />
             </button>
           </div>
         </div>
+        
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white shadow-md">
+            <div className="flex flex-col py-2">
+              {['home', 'projects', 'about', 'contact'].map((section) => (
+                <button
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  className={cn(
+                    "py-3 px-4 text-left hover:bg-gray-50 transition-colors",
+                    activeSection === section && "text-teal-500"
+                  )}
+                >
+                  {section.charAt(0).toUpperCase() + section.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
       
       {showScrollTop && (
